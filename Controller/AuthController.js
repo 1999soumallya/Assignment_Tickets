@@ -9,8 +9,10 @@ const Register = expressAsyncHandler(async (req, res) => {
 
         await UserModel.findOne({ email: email }).then(async (result) => {
 
-            if (result) {
+            if (result && (result.isActive == true)) {
                 res.status(400).json({ message: "User already exsist's", success: false, error: result })
+            } else if (result.isActive == false) {
+                res.status(400).json({ message: "User have deactivated", success: false })
             } else {
                 await UserModel.create({ name: name, email: email, password: password, picture: picture, isActive: true, isAdmin: true }).then(async (create) => {
                     res.status(200).json({ message: "User create successfull", success: true, result: create, token: await Token(create._id) })
@@ -35,7 +37,11 @@ const Login = expressAsyncHandler(async (req, res) => {
 
         await UserModel.findOne({ email: email }).then(async (result) => {
             if (result && (await result.matchPassword(password))) {
-                res.status(200).json({ message: "User login successfull", success: true, result: result, token: await Token(result._id) })
+                if (result.isActive == false) {
+                    res.status(400).json({ message: "User have deactivated", success: false })
+                } else {
+                    res.status(200).json({ message: "User login successfull", success: true, result: result, token: await Token(result._id) })
+                }
             } else {
                 res.status(400).json({ message: "Email or Password is not valid", success: false })
             }
