@@ -9,7 +9,7 @@ const { Pagination } = require("../Helper/Helper");
 const GenerateTicketController = expressAsyncHandler(async (req, res) => {
     try {
         const { user } = req
-        let TotalTickets = req.body.totalTokens || 1
+        let TotalTickets = (!req.body.totalTokens || (req.body.totalTokens == 0)) ? 1 : req.body.totalTokens
         let Tokens = []
 
         while (TotalTickets > 0) {
