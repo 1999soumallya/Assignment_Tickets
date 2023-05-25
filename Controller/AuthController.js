@@ -11,7 +11,7 @@ const Register = expressAsyncHandler(async (req, res) => {
 
             if (result && (result.isActive == true)) {
                 res.status(400).json({ message: "User already exsist's", success: false, error: result })
-            } else if (result.isActive == false) {
+            } else if (result && (result.isActive == false)) {
                 res.status(400).json({ message: "User have deactivated", success: false })
             } else {
                 await UserModel.create({ name: name, email: email, password: password, picture: picture, isActive: true, isAdmin: true }).then(async (create) => {
@@ -22,7 +22,7 @@ const Register = expressAsyncHandler(async (req, res) => {
             }
 
         }).catch((err) => {
-            res.status(400).json({ message: "User find failed", success: false, error: err })
+            res.status(400).json({ message: "User find failed", success: false, error: err.toString() })
         });
 
     } catch (error) {
