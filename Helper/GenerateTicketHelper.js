@@ -4,7 +4,7 @@ const GenerateRandomNumber = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const GetUniqueNumbersForTickets = (min, max, count) => {
+const FilterUniqueNumbersForTickets = (min, max, count) => {
     var random = [];
     for (var i = 0; i < count; i++) {
         flag = true;
@@ -28,27 +28,27 @@ const GenerateTickets = () => {
             finalTicket[0] = Array(9).fill(0);
             finalTicket[1] = Array(9).fill(0);
             finalTicket[2] = Array(9).fill(0);
-            let r = GetUniqueNumbersForTickets(0, 8, 3);
+            let r = FilterUniqueNumbersForTickets(0, 8, 3);
             for (i = 0; i < r.length; i++) {
                 cols[r[i]] = 1;
             }
             colPlaceholder = [];
             for (i = 0; i < cols.length; i++) {
-                colPlaceholder.push(GetUniqueNumbersForTickets(0, 2, cols[i]));
+                colPlaceholder.push(FilterUniqueNumbersForTickets(0, 2, cols[i]));
             }
             for (i = 0; i < colPlaceholder.length; i++) {
-                nums = GetUniqueNumbersForTickets(((i * 10)), (i * 10) + 9, colPlaceholder[i].length)
+                nums = FilterUniqueNumbersForTickets(((i * 10)), (i * 10) + 9, colPlaceholder[i].length)
                 for (j = 0; j < colPlaceholder[i].length; j++) {
                     finalTicket[colPlaceholder[i][j]][i] = nums[j];
                 }
             }
-            flag = testFinalTicket(finalTicket);
+            flag = TestTicket(finalTicket);
         }
         resolve(finalTicket)
     })
 }
 
-function testFinalTicket(ticket) {
+const TestTicket = (ticket) => {
     for (i = 0; i < 3; i++) {
         var arr = ticket[i];
         count = 0;
