@@ -14,10 +14,10 @@ const ValidateToken = expressAsyncHandler(async (req, res, next) => {
                 if (valid && (valid.isActive == true)) {
                     req.user = valid
                     next()
-                } else if (valid.isActive == false) {
+                } else if (valid && (valid.isActive == false)) {
                     res.status(400).json({ message: "User have deactivated", success: false })
                 } else {
-                    res.status(400).json({ message: "Please provide a valid token", success: false })
+                    res.status(400).json({ message: "User Is Not Authorized", success: false })
                 }
             }).catch((error) => {
                 res.status(400).json({ message: "User find failed", success: false, error: error })
