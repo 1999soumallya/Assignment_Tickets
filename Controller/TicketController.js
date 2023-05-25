@@ -1,5 +1,6 @@
 const expressAsyncHandler = require("express-async-handler");
 const { GenerateTickets } = require("../Helper/GenerateTicketHelper");
+const uuid = require("uuid")
 const TicketModel = require("../Model/TicketModel");
 const UserTokenRelationModel = require("../Model/UserTokenRelationModel");
 const UserModel = require("../Model/UserModel");
@@ -15,7 +16,7 @@ const GenerateTicketController = expressAsyncHandler(async (req, res) => {
             await GenerateTickets().then(async (ticket) => {
                 await TicketModel.findOne({ Tickets: ticket }).then(async (found) => {
                     if (!found) {
-                        await TicketModel.create({ Tickets: ticket }).then(async (result) => {
+                        await TicketModel.create({ Tickets: ticket, Uid: uuid.v4() }).then(async (result) => {
                             await UserTokenRelationModel.create({ Ticket: result._id, User: user._id }).then(async (relation) => {
                                 relation = await TicketModel.populate(relation, { path: "Ticket" })
                                 relation = await UserModel.populate(relation, { path: "User" })
@@ -47,7 +48,7 @@ const GetTokens = expressAsyncHandler(async (req, res) => {
 
         let { limit, offset, totalPage } = Pagination(req.query.page, req.query.limit, count)
 
-        await UserTokenRelationModel.find({ User: user._id, isActive: true }, { Ticket: 1, _id: 0 }).populate("Ticket", "Tickets").skip(offset).limit(limit).then((tickets) => {
+        await UserTokenRelationModel.find({ User: user._id, isActive: true }, { Ticket: 1, _id: 0 }).populate("Ticket", "Tickets Uid").skip(offset).limit(limit).then((tickets) => {
             if (tickets.length > 0) {
                 res.status(200).json({ message: "Get all user tickets success", success: true, tokens: tickets, pagination: { limit: limit, offset: offset, totalPage: totalPage } })
             } else {

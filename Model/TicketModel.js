@@ -9,6 +9,11 @@ var GeneratedTickets = mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+    Uid: {
+        type: String,
+        required: true,
+        unique: true
     }
 }, { timestamps: true });
 // Compile model from schema
