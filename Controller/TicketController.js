@@ -31,6 +31,9 @@ const GenerateTicketController = expressAsyncHandler(async (req, res) => {
 
         await Promise.all(Tokens).then((result) => {
             res.status(200).json({ message: "All Tickets are saved", success: true, tokens: result })
+        }).catch((error) => {
+            console.log(error);
+            res.status(400).json({ message: "Ticket create failed", success: false, error: error.toString() })
         })
 
 
