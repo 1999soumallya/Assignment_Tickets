@@ -19,7 +19,7 @@ const GenerateTicketController = expressAsyncHandler(async (req, res) => {
                         await TicketModel.create({ Tickets: ticket, Uid: uuid.v4() }).then(async (result) => {
                             await UserTokenRelationModel.create({ Ticket: result._id, User: user._id }).then(async (relation) => {
                                 relation = await TicketModel.populate(relation, { path: "Ticket" })
-                                relation = await UserModel.populate(relation, { path: "User" })
+                                relation = await UserModel.populate(relation, { path: "User", select: "email name picture" })
                                 Tokens.push(relation)
                             })
                         })
