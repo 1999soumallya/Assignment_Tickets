@@ -49,11 +49,11 @@ const GetTokens = expressAsyncHandler(async (req, res) => {
 
         let count = await UserTokenRelationModel.find({ User: user._id, isActive: true }).count()
 
-        let { limit, offset, totalPage } = Pagination(req.query.page, req.query.limit, count)
+        let { limit, offset, totalPage, page } = Pagination(req.query.page, req.query.limit, count)
 
         await UserTokenRelationModel.find({ User: user._id, isActive: true }, { Ticket: 1, _id: 0 }).populate("Ticket", "Tickets Uid").skip(offset).limit(limit).then((tickets) => {
             if (tickets.length > 0) {
-                res.status(200).json({ message: "Get all user tickets success", success: true, tokens: tickets, pagination: { limit: limit, offset: offset, totalPage: totalPage } })
+                res.status(200).json({ message: "Get all user tickets success", success: true, tokens: tickets, pagination: { limit: limit, offset: offset, totalPage: totalPage, currentPage: page } })
             } else {
                 res.status(200).json({ message: "No tickets Found", success: true })
             }
